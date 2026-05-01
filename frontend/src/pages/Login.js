@@ -4,24 +4,28 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState(""); // ✅ added
   const navigate = useNavigate();
 
   const login = async () => {
-  const cleanUser = username.trim().toLowerCase();  // ✅ FIX
+    const cleanUser = username.trim().toLowerCase();
 
-  const res = await API.post("/login", { username: cleanUser });
+    const res = await API.post("/login", {
+      username: cleanUser,
+      password: password // ✅ added
+    });
 
-  const role = res.data.role;
+    const role = res.data.role;
 
-  localStorage.setItem("user", cleanUser); // ✅ store clean
-  localStorage.setItem("role", role);
+    localStorage.setItem("user", cleanUser);
+    localStorage.setItem("role", role);
 
-  if (role === "admin") {
-    navigate("/admin");
-  } else {
-    navigate("/user");
-  }
-};
+    if (role === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/user");
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -32,6 +36,14 @@ export default function Login() {
           style={styles.input}
           placeholder="Enter username"
           onChange={(e) => setUsername(e.target.value)}
+        />
+
+        {/* ✅ added password field */}
+        <input
+          type="password"
+          style={styles.input}
+          placeholder="Enter password"
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <button style={styles.button} onClick={login}>
